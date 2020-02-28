@@ -7,38 +7,50 @@ import org.apache.kafka.connect.sink.{SinkRecord, SinkTask}
 import scala.collection.JavaConverters._
 import scala.util.{Success, Failure}
 import com.typesafe.scalalogging.LazyLogging
+import com.influxdb.client.write.Point
+import java.time.Instant
+import com.influxdb.client.domain.WritePrecision
 
 class InfluxDBTask extends SinkTask with LazyLogging {
   var writer: Option[InfluxDBWriter] = None
+  var sinkConfig: Option[InfluxDBSinkConfig] = None
 
   override def start(props: util.Map[String, String]): Unit = {
-    val sinkConfig = new InfluxDBSinkConfig(props)
+    this.sinkConfig = Some(new InfluxDBSinkConfig(props))
+
     writer = Some(
-      new InfluxDBWriter()
+      new InfluxDBWriter(
+        sinkConfig.get.getString(InfluxDBSinkConfig.INFLUXDB_URL),
+        sinkConfig.get.getString(InfluxDBSinkConfig.INFLUXDB_TOKEN)
+      )
     )
   }
 
-  override def put(records: util.Collection[SinkRecord]): Unit =
-    records.asScala
-      .map(_.value.toString)
-      .map(text =>
-        (text, writer match {
-          case Some(writer) => writer.writePoint(text)
-          case None =>
-            Failure(new IllegalStateException("InfluxDB writer is not set"))
-        })
-      )
-      .foreach {
-        case (text, result) =>
-          result match {
-            case Success(id) =>
-              logger.info(
-                s"successfully tweeted `${text}`; got assigned id ${id}"
-              )
-            case Failure(err) =>
-              logger.warn(s"tweeting `${text}` failed: ${err.getMessage}")
+  override def put(records: util.Collection[SinkRecord]): Unit = {
+    if (records.size() > 0) {
+      records.forEach((record: SinkRecord) => {
+        val topic = record.topic()
+
+        // TODO: allow config to specify a field in the record as the timestamp
+        val timestamp = record.timestamp()
+
+        this.writer match {
+          case Some(writer) => {
+            writer.writePoint(
+              Point
+                .measurement(
+                  this.sinkConfig.get
+                    .getString(InfluxDBSinkConfig.INFLUXDB_MEASUREMENT)
+                )
+                .time(timestamp, WritePrecision.MS)
+                .addTag("tag", "value")
+                .addField("field", 0)
+            )
           }
-      }
+        }
+      })
+    }
+  }
 
   override def stop(): Unit = {}
 
