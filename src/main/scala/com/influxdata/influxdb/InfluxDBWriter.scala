@@ -9,14 +9,14 @@ import com.influxdb.client.InfluxDBClient
 import com.influxdb.client.domain.WritePrecision
 import com.influxdb.client.write.Point
 
-class InfluxDBWriter(url: String, token: String) extends LazyLogging {
+class InfluxDBWriter(url: String, org: String, token: String, bucket: String) extends LazyLogging {
   private val influxDBClient = InfluxDBClientFactory
     .create(url, token.toCharArray())
 
   def writePoint(point: Point): Boolean = {
     this.influxDBClient
       .getWriteApi()
-      .writeMeasurement("bucket", "org", point.getPrecision(), point)
+      .writeMeasurement(bucket, org, point.getPrecision(), point)
     return true
   }
 

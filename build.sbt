@@ -4,21 +4,29 @@ name := "kafka-connect-influxdb"
 organization := "com.influxdata"
 version := "1.0"
 
+resolvers += "Akka Snapshot Repository" at "https://repo.akka.io/snapshots/"
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
-libraryDependencies += "com.influxdb" % "influxdb-client-scala" % "1.5.0"
-libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2"
-libraryDependencies += "org.apache.kafka" % "connect-api" % "2.4.0"
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.1.1"
+libraryDependencies ++= Seq(
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
+  "com.influxdb" % "influxdb-client-scala" % "1.5.0",
+  "com.lihaoyi" %% "requests" % "0.5.1",
+  "com.lihaoyi" %% "ujson" % "0.9.5",
+  "com.typesafe.akka" %% "akka-actor" % "2.5.20",
+  "com.typesafe.akka" %% "akka-stream" % "2.5.20",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
+  "org.apache.kafka" % "connect-api" % "2.4.0",
+  "org.scalactic" %% "scalactic" % "3.1.1"
+)
 
 val testcontainersScalaVersion = "0.35.2"
 
-libraryDependencies += "org.apache.kafka" %% "kafka" % "2.4.0" % "test"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.1.1" % "test"
 libraryDependencies ++= Seq(
+  "org.scalatest" %% "scalatest" % "3.1.1" % "test",
+  "org.apache.kafka" %% "kafka" % "2.4.0" % "test",
   "com.dimafeng" %% "testcontainers-scala-scalatest" % testcontainersScalaVersion % "test",
-  "com.dimafeng" %% "testcontainers-scala-kafka" % testcontainersScalaVersion % "test"
+  "com.dimafeng" %% "testcontainers-scala-kafka" % testcontainersScalaVersion % "test",
+  "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.20" % "test"
 )
 
 publishArtifact in Test := true

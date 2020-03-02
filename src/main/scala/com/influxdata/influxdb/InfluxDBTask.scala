@@ -20,8 +20,10 @@ class InfluxDBTask extends SinkTask with LazyLogging {
 
     writer = Some(
       new InfluxDBWriter(
-        sinkConfig.get.getString(InfluxDBSinkConfig.INFLUXDB_URL),
-        sinkConfig.get.getString(InfluxDBSinkConfig.INFLUXDB_TOKEN)
+        url = sinkConfig.get.getString(InfluxDBSinkConfig.INFLUXDB_URL),
+        org = sinkConfig.get.getString(InfluxDBSinkConfig.INFLUXDB_ORG),
+        token = sinkConfig.get.getString(InfluxDBSinkConfig.INFLUXDB_TOKEN),
+        bucket = sinkConfig.get.getString(InfluxDBSinkConfig.INFLUXDB_BUCKET)
       )
     )
   }
