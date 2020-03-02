@@ -25,6 +25,7 @@ import org.apache.kafka.common.serialization.{
 }
 import org.scalatest.flatspec.AnyFlatSpec
 import org.testcontainers.containers.wait.Wait
+import com.influxdb.client.domain.WritePrecision
 
 class TestInfluxDBWriter extends AnyFlatSpec with ForAllTestContainer {
   implicit val system: ActorSystem = ActorSystem("it-tests")
@@ -62,8 +63,18 @@ class TestInfluxDBWriter extends AnyFlatSpec with ForAllTestContainer {
         bucket = "test"
       )
 
+    val rand = scala.util.Random
+    val pointTagKey = rand.nextString(5)
+    val pointTagValue = rand.nextString(5)
+    val pointFieldKey = rand.nextString(5)
+    val pointFieldValue = rand.nextInt()
+
     val written = writer.writePoint(
-      Point.measurement("test").addTag("tag", "one").addField("field", 1)
+      Point
+        .measurement("test")
+        .time(System.currentTimeMillis(), WritePrecision.MS)
+        .addTag(pointTagKey, pointTagValue)
+        .addField(pointFieldKey, pointFieldValue)
     )
 
     assert(written == true)
@@ -87,8 +98,11 @@ class TestInfluxDBWriter extends AnyFlatSpec with ForAllTestContainer {
     val firstRecord = results.requestNext()
 
     assert(firstRecord.getMeasurement().equals("test"))
-    assert(firstRecord.getValueByKey("tag") == "one")
-    assert(firstRecord.getValueByKey("field") == 1)
+    assert(firstRecord.getValueByKey(pointTagKey) == pointTagValue)
+
+    assert(firstRecord.getValueByKey("_field") == pointFieldKey)
+    assert(firstRecord.getField() == pointFieldKey)
+    assert(firstRecord.getValue() == pointFieldValue)
 
     influxDBClient.close()
   }

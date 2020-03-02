@@ -1,0 +1,14 @@
+name: Scala Build
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    name: Scala Build
+    steps:
+      - uses: actions/checkout@v1
+      - name: Tests
+        uses: lokkju/github-action-sbt@master
+        with:
+          commands: test
+          sbt_project_directory: ./build
