@@ -1,0 +1,17 @@
+{
+    "name": "connect.sink.influxdb",
+    "config": {
+        "connector.class": "com.influxdata.influxdb.InfluxDBConnector",
+        "tasks.max": "1",
+        "topics": "points",
+        "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "key.converter.schemas.enable": false,
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "value.converter.schemas.enable": false,
+        "influxdb.url": "influxdb:9999",
+        "influxdb.org": "connect",
+        "influxdb.token": "connect",
+        "influxdb.bucket": "connect",
+        "influxdb.measurement": "connect"
+    }
+}
