@@ -32,7 +32,6 @@ class InfluxDBConnector extends SinkConnector with LazyLogging {
   override def taskConfigs(
       maxTasks: Int
   ): util.List[util.Map[String, String]] = {
-    logger.info(s"Setting task configurations for $maxTasks workers.")
     (1 to maxTasks).map(c => configProps).toList.asJava
   }
 
@@ -42,7 +41,6 @@ class InfluxDBConnector extends SinkConnector with LazyLogging {
     * @param props A map of properties for the connector and worker
     * */
   override def start(props: util.Map[String, String]): Unit = {
-    logger.info(s"Starting InfluxDB sink task with ${props.toString}.")
     configProps = props
     Try(new InfluxDBSinkConfig(props)) match {
       case Failure(f) =>

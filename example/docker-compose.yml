@@ -34,8 +34,6 @@ services:
 
   kafka-connect:
     image: confluentinc/cp-kafka-connect-base:latest
-    # entrypoint: connect-standalone
-    # command: /etc/kafka-connect/kafka-connect.properties /etc/kafka-connect/influxdb.properties
     depends_on:
       - kafka
       - schema-registry
@@ -63,5 +61,4 @@ services:
       CONNECT_ZOOKEEPER_CONNECT: zookeeper:2181
       CONNECT_PLUGIN_PATH: /usr/share/java,/etc/kafka-connect/jars
     volumes:
-      - ./influxdb.kafka.properties:/etc/kafka-connect/influxdb.properties
-      - ../target/scala-2.12/kafka-connect-influxdb_2.12-1.0.jar:/etc/kafka-connect/jars/kafka-connect-influxdb.jar
+      - ../target/scala-2.12/kafka-connect-influxdb-assembly-1.0.jar:/etc/kafka-connect/jars/kafka-connect-influxdb.jar

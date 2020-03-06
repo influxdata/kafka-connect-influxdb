@@ -10,7 +10,6 @@ import com.dimafeng.testcontainers.{
   MultipleContainers
 }
 import com.influxdb.client.domain.Query
-import com.influxdb.client.InfluxDBClient
 import com.influxdb.client.scala.InfluxDBClientScalaFactory
 import com.influxdb.client.write.Point
 import com.influxdb.query.FluxRecord

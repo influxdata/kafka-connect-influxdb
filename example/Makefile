@@ -1,6 +1,6 @@
 .DEFAULT: _all
 
-_all: up sleep kafka-topics kafka-connect-register
+_all: up sleep kafka-topics influxdb-setup sleep kafka-connect-register
 
 clean:
 	@docker-compose down -v
@@ -12,7 +12,7 @@ sleep:
 	@sleep 10
 
 influxdb-setup:
-	docker-compose exec influxdb influx setup --org connect --bucket connect --retention 0 --token connect --username connect --password connect1234
+	docker-compose exec influxdb influx setup --force --org connect --bucket connect --retention 0 --token connect --username connect --password connect1234
 
 kafka-topics:
 	@docker-compose exec kafka kafka-topics --zookeeper=zookeeper:2181 --create --topic influxdb-poc-config  --partitions 1 --replication-factor 1 --if-not-exists
@@ -27,4 +27,4 @@ kafka-connect-register:
     	-d @./kafka-connect-influxdb.json
 
 write-to-kafka:
-	@docker-compose exec kafka bash -c "kafka-console-producer --broker-list kafka:9092 --topic points --property 'parse.key=true' --property 'key.separator=:' < /data/sample-points.txt"
+	@docker-compose exec kafka bash -c "kafka-console-producer --broker-list kafka:9092 --topic points < /data/sample-points.txt"

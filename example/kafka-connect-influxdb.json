@@ -8,7 +8,7 @@
         "key.converter.schemas.enable": false,
         "value.converter": "org.apache.kafka.connect.json.JsonConverter",
         "value.converter.schemas.enable": false,
-        "influxdb.url": "influxdb:9999",
+        "influxdb.url": "http://influxdb:9999",
         "influxdb.org": "connect",
         "influxdb.token": "connect",
         "influxdb.bucket": "connect",

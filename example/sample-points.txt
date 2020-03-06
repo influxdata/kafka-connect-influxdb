@@ -1,5 +1,5 @@
 {"measurement": "temperature", "city": "Glasgow", "country": "Scotland", "value": 5}
-{"measurement": "temperature", "city": "London", "country": "England", "value": 12}
-{"measurement": "temperature", "city": "Barcelona", "country": "Spain", "value": 20}
+{"measurement": "temperature", "city": "London", "country": "England", "value": 12, "humid": true}
+{"measurement": "temperature", "city": "Barcelona", "country": "Spain", "value": 20, "degrees": 1.456}
 {"measurement": "temperature", "city": "Paris", "country": "France", "value": 16}
 {"measurement": "temperature", "city": "Berlin", "country": "Germany", "value": 12}
